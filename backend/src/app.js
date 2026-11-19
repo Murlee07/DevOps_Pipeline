@@ -77,7 +77,6 @@ function createApp({ store, config, logger = console }) {
   // ---- 404 + error handling ----
   app.use((_req, _res, next) => next(new HttpError(404, 'Route not found.')));
 
-  // eslint-disable-next-line no-unused-vars
   app.use((err, _req, res, _next) => {
     if (err.type === 'entity.parse.failed') {
       return res.status(400).json({ error: 'Malformed JSON body.' });
