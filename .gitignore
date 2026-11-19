@@ -1,0 +1,28 @@
+# dependencies / build output
+node_modules/
+dist/
+coverage/
+reports/
+
+# secrets
+.env
+*.pem
+*.key
+kubeconfig*
+
+# terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+.terraform.lock.hcl.bak
+crash.log
+
+# misc
+.DS_Store
+*.log
+.idea/
+.vscode/
+
+.venv/

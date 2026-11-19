@@ -1,0 +1,21 @@
+# AWS EKS: public AWS load balancer for the frontend, gp3 EBS storage for PostgreSQL
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../base
+  - storageclass.yaml
+patches:
+  - target:
+      kind: Service
+      name: frontend
+    patch: |-
+      - op: replace
+        path: /spec/type
+        value: LoadBalancer
+  - target:
+      kind: ConfigMap
+      name: shieldboard-config
+    patch: |-
+      - op: replace
+        path: /data/DEPLOY_ENV
+        value: aws-eks

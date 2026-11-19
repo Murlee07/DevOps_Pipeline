@@ -1,0 +1,53 @@
+# Docker Desktop Kubernetes: lighter footprint, frontend exposed on http://localhost:8081
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../base
+patches:
+  - target:
+      kind: Service
+      name: frontend
+    patch: |-
+      - op: replace
+        path: /spec/type
+        value: LoadBalancer
+      - op: replace
+        path: /spec/ports/0/port
+        value: 8081
+  - target:
+      kind: Deployment
+      name: backend
+    patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 1
+  - target:
+      kind: Deployment
+      name: frontend
+    patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 1
+  - target:
+      kind: HorizontalPodAutoscaler
+      name: backend
+    patch: |-
+      - op: replace
+        path: /spec/minReplicas
+        value: 1
+      - op: replace
+        path: /spec/maxReplicas
+        value: 2
+  - target:
+      kind: PodDisruptionBudget
+    patch: |-
+      - op: replace
+        path: /spec/minAvailable
+        value: 0
+  - target:
+      kind: ConfigMap
+      name: shieldboard-config
+    patch: |-
+      - op: replace
+        path: /data/DEPLOY_ENV
+        value: docker-desktop-k8s

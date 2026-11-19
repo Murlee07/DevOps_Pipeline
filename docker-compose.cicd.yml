@@ -1,0 +1,70 @@
+# CI/CD toolchain on Docker Desktop: Jenkins (with Docker CLI, Trivy, sonar-scanner, kubectl,
+# Terraform, AWS CLI, Node.js) + SonarQube.
+#   docker compose -f docker-compose.cicd.yml up -d --build
+#   Jenkins   -> http://localhost:8080
+#   SonarQube -> http://localhost:9000
+name: shieldboard-cicd
+
+services:
+  jenkins:
+    build: ./jenkins
+    image: shieldboard-jenkins:local
+    container_name: jenkins
+    restart: unless-stopped
+    # Root is needed to use the Docker Desktop socket from inside the container.
+    # This is a LOCAL LAB setup only — never expose this Jenkins to the internet.
+    user: root
+    ports:
+      - "${JENKINS_PORT:-8080}:8080"
+      - "50000:50000"
+    environment:
+      JAVA_OPTS: -Djenkins.install.runSetupWizard=false -Dhudson.plugins.git.GitSCM.ALLOW_LOCAL_CHECKOUT=true
+      CASC_JENKINS_CONFIG: /usr/share/jenkins/casc.yaml
+      JENKINS_PORT: ${JENKINS_PORT:-8080}
+      JENKINS_ADMIN_ID: ${JENKINS_ADMIN_ID:-admin}
+      JENKINS_ADMIN_PASSWORD: ${JENKINS_ADMIN_PASSWORD:-admin123}
+      GIT_REPO_URL: ${GIT_REPO_URL:-https://github.com/murlee7/secure-devsecops-pipeline.git}
+      GIT_BRANCH: ${GIT_BRANCH:-main}
+      SONAR_TOKEN: ${SONAR_TOKEN:-replace-me-after-sonarqube-setup}
+      DOCKERHUB_USER: ${DOCKERHUB_USER:-murlee7}
+      DOCKERHUB_TOKEN: ${DOCKERHUB_TOKEN:-replace-me}
+      APP_JWT_SECRET: ${APP_JWT_SECRET:-jenkins-deployed-jwt-secret-change-me-0123456789}
+      APP_DB_PASSWORD: ${APP_DB_PASSWORD:-shieldboard_local_pw}
+      AWS_ACCESS_KEY_ID_SEED: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY_SEED: ${AWS_SECRET_ACCESS_KEY:-}
+    volumes:
+      - jenkins-home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+      - trivy-cache:/root/.cache/trivy
+    extra_hosts:
+      # lets Jenkins reach Docker Desktop's Kubernetes API using the default kubeconfig hostname
+      - "kubernetes.docker.internal:host-gateway"
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - sonarqube
+    networks: [cicd]
+
+  sonarqube:
+    image: sonarqube:community
+    container_name: sonarqube
+    restart: unless-stopped
+    ports:
+      - "9000:9000"
+    environment:
+      SONAR_ES_BOOTSTRAP_CHECKS_DISABLE: "true"
+    volumes:
+      - sonarqube-data:/opt/sonarqube/data
+      - sonarqube-extensions:/opt/sonarqube/extensions
+      - sonarqube-logs:/opt/sonarqube/logs
+    networks: [cicd]
+
+networks:
+  cicd:
+    name: shieldboard-cicd
+
+volumes:
+  jenkins-home:
+  trivy-cache:
+  sonarqube-data:
+  sonarqube-extensions:
+  sonarqube-logs:

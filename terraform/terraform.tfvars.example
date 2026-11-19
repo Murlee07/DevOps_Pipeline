@@ -1,0 +1,11 @@
+# cp terraform.tfvars.example terraform.tfvars
+aws_region          = "ap-south-1"
+environment         = "dev"
+kubernetes_version  = "1.33"
+node_instance_types = ["t3.medium"]
+node_desired_size   = 2
+
+# Give the IAM user that Jenkins uses (aws-creds) admin access to the cluster:
+# cluster_admin_arns = {
+#   jenkins = "arn:aws:iam::123456789012:user/jenkins-ci"
+# }

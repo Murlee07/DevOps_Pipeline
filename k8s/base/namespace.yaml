@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: shieldboard
+  labels:
+    # Enforce the "restricted" Pod Security Standard for app workloads (warn only, since postgres needs root init)
+    pod-security.kubernetes.io/warn: restricted
+    pod-security.kubernetes.io/audit: restricted

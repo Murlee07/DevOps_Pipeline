@@ -1,0 +1,83 @@
+# Jenkins Configuration-as-Code: admin user, SonarQube server, credentials and the pipeline job
+# are all created automatically on first boot. Values come from environment variables
+# set in docker-compose.cicd.yml / .env.
+jenkins:
+  systemMessage: "ShieldBoard DevSecOps CI/CD — configured as code"
+  numExecutors: 2
+  mode: NORMAL
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: "${JENKINS_ADMIN_ID:-admin}"
+          password: "${JENKINS_ADMIN_PASSWORD:-admin123}"
+  authorizationStrategy:
+    loggedInUsersCanDoAnything:
+      allowAnonymousRead: false
+
+unclassified:
+  location:
+    url: "http://localhost:${JENKINS_PORT:-8080}/"
+  sonarGlobalConfiguration:
+    buildWrapperEnabled: true
+    installations:
+      - name: "SonarQube"
+        serverUrl: "http://sonarqube:9000"
+        credentialsId: "sonar-token"
+
+credentials:
+  system:
+    domainCredentials:
+      - credentials:
+          - string:
+              scope: GLOBAL
+              id: "sonar-token"
+              description: "SonarQube analysis token"
+              secret: "${SONAR_TOKEN:-replace-me}"
+          - usernamePassword:
+              scope: GLOBAL
+              id: "dockerhub-creds"
+              description: "Docker Hub username + access token"
+              username: "${DOCKERHUB_USER:-murlee7}"
+              password: "${DOCKERHUB_TOKEN:-replace-me}"
+          - string:
+              scope: GLOBAL
+              id: "app-jwt-secret"
+              description: "JWT signing secret for deployed app"
+              secret: "${APP_JWT_SECRET:-jenkins-deployed-jwt-secret-change-me-0123456789}"
+          - string:
+              scope: GLOBAL
+              id: "app-db-password"
+              description: "PostgreSQL password for deployed app"
+              secret: "${APP_DB_PASSWORD:-shieldboard_local_pw}"
+          - aws:
+              scope: GLOBAL
+              id: "aws-creds"
+              description: "AWS access key for ECR/EKS"
+              accessKey: "${AWS_ACCESS_KEY_ID_SEED:-not-configured}"
+              secretKey: "${AWS_SECRET_ACCESS_KEY_SEED:-not-configured}"
+
+jobs:
+  - script: >
+      pipelineJob('shieldboard-devsecops') {
+        description('Secure DevSecOps pipeline: test -> SonarQube -> Trivy -> Docker -> deploy')
+        logRotator { numToKeep(20) }
+        parameters {
+          choiceParam('DEPLOY_TARGET', ['compose', 'docker-desktop-k8s', 'aws-eks', 'none'], 'Where to deploy after all security gates pass')
+          booleanParam('PUSH_IMAGES', false, 'Push images to Docker Hub (always pushes to ECR for aws-eks)')
+          booleanParam('ENFORCE_QUALITY_GATE', true, 'Fail the build if the SonarQube quality gate fails')
+          choiceParam('TRIVY_FAIL_SEVERITY', ['CRITICAL', 'HIGH,CRITICAL', 'NONE'], 'Severities that fail the Trivy gates')
+        }
+        definition {
+          cpsScm {
+            scm {
+              git {
+                remote { url('${GIT_REPO_URL:-https://github.com/murlee7/secure-devsecops-pipeline.git}') }
+                branch('*/${GIT_BRANCH:-main}')
+              }
+            }
+            scriptPath('Jenkinsfile')
+            lightweight(true)
+          }
+        }
+      }
