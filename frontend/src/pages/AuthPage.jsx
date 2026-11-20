@@ -46,7 +46,7 @@ export default function AuthPage({ mode }) {
             <div className="brand-name">ShieldBoard</div>
           </div>
           <h1>
-            Ship tasks.
+            Ship tasks safely.
             <br />
             <span className="grad">Not vulnerabilities.</span>
           </h1>
