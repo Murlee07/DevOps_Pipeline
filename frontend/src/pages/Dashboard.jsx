@@ -49,7 +49,7 @@ export default function Dashboard() {
       <header className="page-head">
         <div>
           <p className="eyebrow">{greeting()}</p>
-          <h1>{user?.name?.split(' ')[0]}, here&apos;s your board</h1>
+          <h1>{user?.name?.split(' ')[0]}, here&apos;s your DevSecOps board</h1>
         </div>
         <Link to="/board" className="btn btn-primary">
           Open board <ArrowIcon size={16} />
