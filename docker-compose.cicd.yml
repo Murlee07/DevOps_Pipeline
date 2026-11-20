@@ -26,6 +26,7 @@ services:
       GIT_REPO_URL: ${GIT_REPO_URL:-https://github.com/murlee7/secure-devsecops-pipeline.git}
       GIT_BRANCH: ${GIT_BRANCH:-main}
       SONAR_TOKEN: ${SONAR_TOKEN:-replace-me-after-sonarqube-setup}
+      SONAR_SCANNER_TOKEN: ${SONAR_TOKEN:-}
       DOCKERHUB_USER: ${DOCKERHUB_USER:-murlee7}
       DOCKERHUB_TOKEN: ${DOCKERHUB_TOKEN:-replace-me}
       APP_JWT_SECRET: ${APP_JWT_SECRET:-jenkins-deployed-jwt-secret-change-me-0123456789}

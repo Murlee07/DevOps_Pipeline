@@ -117,7 +117,7 @@ pipeline {
             steps {
                 withSonarQubeEnv('SonarQube') {
                     // single quotes: the token is expanded by the shell, never interpolated by Groovy
-                    sh 'sonar-scanner -Dsonar.host.url="$SONAR_HOST_URL" -Dsonar.token="$SONAR_AUTH_TOKEN" -Dsonar.projectVersion="$IMAGE_TAG"'
+                    sh 'sonar-scanner -Dsonar.host.url="$SONAR_HOST_URL" -Dsonar.token="${SONAR_SCANNER_TOKEN:-$SONAR_AUTH_TOKEN}" -Dsonar.projectVersion="$IMAGE_TAG"'
                 }
             }
         }
