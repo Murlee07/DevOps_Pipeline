@@ -8,7 +8,7 @@ COPY . .
 RUN npm run build
 
 # ---------- Stage 2: serve with unprivileged nginx ----------
-FROM nginxinc/nginx-unprivileged:stable-alpine AS runtime
+FROM nginxinc/nginx-unprivileged:mainline-alpine AS runtime
 
 ARG APP_VERSION=1.0.0
 ARG GIT_COMMIT=unknown
