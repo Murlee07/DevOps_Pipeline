@@ -51,7 +51,7 @@ export default function AuthPage({ mode }) {
             <span className="grad">Not vulnerabilities. 🛡️</span>
           </h1>
           <p className="lead">
-            A secure task board delivered end-to-end through an automated DevSecOps pipeline.
+            My college project: a secure task board delivered end-to-end through an automated DevSecOps pipeline.
           </p>
           <ul className="feature-list">
             {FEATURES.map((f) => (
