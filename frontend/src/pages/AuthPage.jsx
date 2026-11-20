@@ -48,7 +48,7 @@ export default function AuthPage({ mode }) {
           <h1>
             Ship tasks safely.
             <br />
-            <span className="grad">Not vulnerabilities.</span>
+            <span className="grad">Not vulnerabilities. 🛡️</span>
           </h1>
           <p className="lead">
             A secure task board delivered end-to-end through an automated DevSecOps pipeline.
