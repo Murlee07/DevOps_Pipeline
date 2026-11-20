@@ -1,4 +1,4 @@
-/* ShieldBoard — dark "security operations" theme. No external fonts/CDNs (keeps CSP strict). */
+/* SecureBoard — dark "security operations" theme. No external fonts/CDNs (keeps CSP strict). */
 :root {
   --bg: #0b1020;
   --bg-2: #0f1529;

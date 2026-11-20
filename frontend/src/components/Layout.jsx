@@ -37,7 +37,7 @@ export default function Layout() {
             <ShieldIcon size={22} />
           </span>
           <div>
-            <div className="brand-name">ShieldBoard</div>
+            <div className="brand-name">SecureBoard</div>
             <div className="brand-sub">build · scan · deploy</div>
           </div>
         </div>
@@ -76,7 +76,7 @@ export default function Layout() {
           <button className="icon-btn" onClick={() => setOpen(true)} aria-label="Open menu">
             <MenuIcon />
           </button>
-          <span className="brand-name">ShieldBoard</span>
+          <span className="brand-name">SecureBoard</span>
         </div>
         <Outlet context={{ info }} />
       </main>

@@ -43,7 +43,7 @@ export default function AuthPage({ mode }) {
             <span className="brand-mark">
               <ShieldIcon size={28} />
             </span>
-            <div className="brand-name">ShieldBoard</div>
+            <div className="brand-name">SecureBoard</div>
           </div>
           <h1>
             Ship tasks safely.
