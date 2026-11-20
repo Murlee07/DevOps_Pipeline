@@ -38,7 +38,7 @@ export default function Layout() {
           </span>
           <div>
             <div className="brand-name">ShieldBoard</div>
-            <div className="brand-sub">secure · ship · repeat</div>
+            <div className="brand-sub">build · scan · deploy</div>
           </div>
         </div>
 
