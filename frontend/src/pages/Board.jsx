@@ -86,7 +86,7 @@ export default function Board() {
       <header className="page-head">
         <div>
           <p className="eyebrow">Workspace</p>
-          <h1>Task board</h1>
+          <h1>Sprint board</h1>
         </div>
         <button className="btn btn-primary" onClick={() => setModal({})}>
           <PlusIcon size={16} /> New task
